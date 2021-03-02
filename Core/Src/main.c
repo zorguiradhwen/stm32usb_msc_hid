@@ -28,7 +28,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "File_Handling.h"
+#include "printf_override.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,7 +60,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+char buffer[100];
+int indx = 0;
 /* USER CODE END 0 */
 
 /**
@@ -91,12 +93,32 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_SDIO_SD_Init();
   MX_USART1_UART_Init();
-  MX_FATFS_Init();
   MX_USB_DEVICE_Init();
+  MX_SDIO_SD_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
+  printf_init();
 
+  printf("Hello World!\n\r");
+  Mount_SD("/");
+  Format_SD();
+  Check_SD_Space();
+  Create_File("FILE1.TXT");
+  Create_File("FILE2.TXT");
+  Unmount_SD("/");
+
+  for (indx = 0; indx < 15; indx++)
+  {
+	Mount_SD("/");
+	sprintf(buffer, "Hello ---> %d\n", indx);
+	Update_File("FILE1.TXT", buffer);
+	sprintf(buffer, "world ---> %d\n", indx);
+	Update_File("FILE2.TXT", buffer);
+	Unmount_SD("/");
+
+	HAL_Delay(500);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */

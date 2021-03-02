@@ -24,6 +24,8 @@
 #include "usb_device.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
+//#include "usbd_customhid.h"
+//#include "usbd_custom_hid_if.h"
 #include "usbd_msc.h"
 #include "usbd_storage_if.h"
 

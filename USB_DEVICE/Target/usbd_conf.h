@@ -77,6 +77,10 @@
 #define USBD_SELF_POWERED     1U
 /*---------- -----------*/
 #define MSC_MEDIA_PACKET     512U
+/*---------- -----------*/
+#define USBD_CUSTOMHID_OUTREPORT_BUF_SIZE     8U
+/*---------- -----------*/
+#define USBD_CUSTOM_HID_REPORT_DESC_SIZE     63U
 
 /****************************************/
 /* #define for FS and HS identification */
