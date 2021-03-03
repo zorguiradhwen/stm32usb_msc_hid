@@ -28,8 +28,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "File_Handling.h"
-#include "printf_override.h"
+#include "Keyboard.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,29 +95,9 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_SDIO_SD_Init();
-  MX_FATFS_Init();
+  //MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-  printf_init();
-
-  printf("Hello World!\n\r");
-  Mount_SD("/");
-  Format_SD();
-  Check_SD_Space();
-  Create_File("FILE1.TXT");
-  Create_File("FILE2.TXT");
-  Unmount_SD("/");
-
-  for (indx = 0; indx < 15; indx++)
-  {
-	Mount_SD("/");
-	sprintf(buffer, "Hello ---> %d\n", indx);
-	Update_File("FILE1.TXT", buffer);
-	sprintf(buffer, "world ---> %d\n", indx);
-	Update_File("FILE2.TXT", buffer);
-	Unmount_SD("/");
-
-	HAL_Delay(500);
-  }
+  Keyboard_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -128,6 +107,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  HAL_Delay(1000);
+	  Keyboard_write("Hello World!!\n");
+	  HAL_Delay(1000);
+	  Keyboard_write("Good bye Cruel World!!\n");
+
   }
   /* USER CODE END 3 */
 }

@@ -40,7 +40,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_msc.h"
-
+#include "usbd_msc_hid_core.h"
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
@@ -80,29 +80,6 @@
 /** @defgroup MSC_CORE_Private_FunctionPrototypes
   * @{
   */
-uint8_t  USBD_MSC_Init (USBD_HandleTypeDef *pdev,
-                            uint8_t cfgidx);
-
-uint8_t  USBD_MSC_DeInit (USBD_HandleTypeDef *pdev,
-                              uint8_t cfgidx);
-
-uint8_t  USBD_MSC_Setup (USBD_HandleTypeDef *pdev,
-                             USBD_SetupReqTypedef *req);
-
-uint8_t  USBD_MSC_DataIn (USBD_HandleTypeDef *pdev,
-                              uint8_t epnum);
-
-
-uint8_t  USBD_MSC_DataOut (USBD_HandleTypeDef *pdev,
-                               uint8_t epnum);
-
-uint8_t  *USBD_MSC_GetHSCfgDesc (uint16_t *length);
-
-uint8_t  *USBD_MSC_GetFSCfgDesc (uint16_t *length);
-
-uint8_t  *USBD_MSC_GetOtherSpeedCfgDesc (uint16_t *length);
-
-uint8_t  *USBD_MSC_GetDeviceQualifierDescriptor (uint16_t *length);
 
 
 /**
@@ -381,7 +358,7 @@ uint8_t  USBD_MSC_Setup (USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
       if((req->wValue  == 0U) && (req->wLength == 1U) &&
          ((req->bmRequest & 0x80U) == 0x80U))
       {
-        hmsc->max_lun = (uint32_t)((USBD_StorageTypeDef *)pdev->pUserData)->GetMaxLun();
+        hmsc->max_lun = (uint32_t)((USBD_StorageHidTypeDef *)pdev->pUserData)->msc->GetMaxLun();
         USBD_CtlSendData (pdev, (uint8_t *)(void *)&hmsc->max_lun, 1U);
       }
       else

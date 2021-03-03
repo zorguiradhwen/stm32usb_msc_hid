@@ -134,6 +134,30 @@ extern USBD_ClassTypeDef  USBD_CUSTOM_HID;
   * @}
   */
 
+
+uint8_t  USBD_CUSTOM_HID_Init (USBD_HandleTypeDef *pdev,
+                               uint8_t cfgidx);
+
+uint8_t  USBD_CUSTOM_HID_DeInit (USBD_HandleTypeDef *pdev,
+                                 uint8_t cfgidx);
+
+uint8_t  USBD_CUSTOM_HID_Setup (USBD_HandleTypeDef *pdev,
+                                USBD_SetupReqTypedef *req);
+
+uint8_t  *USBD_CUSTOM_HID_GetFSCfgDesc (uint16_t *length);
+
+uint8_t  *USBD_CUSTOM_HID_GetHSCfgDesc (uint16_t *length);
+
+uint8_t  *USBD_CUSTOM_HID_GetOtherSpeedCfgDesc (uint16_t *length);
+
+uint8_t  *USBD_CUSTOM_HID_GetDeviceQualifierDesc (uint16_t *length);
+
+uint8_t  USBD_CUSTOM_HID_DataIn (USBD_HandleTypeDef *pdev, uint8_t epnum);
+
+uint8_t  USBD_CUSTOM_HID_DataOut (USBD_HandleTypeDef *pdev, uint8_t epnum);
+uint8_t  USBD_CUSTOM_HID_EP0_RxReady (USBD_HandleTypeDef  *pdev);
+
+
 /** @defgroup USB_CORE_Exported_Functions
   * @{
   */

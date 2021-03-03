@@ -28,6 +28,7 @@
 #include "usbd_msc.h"
 #include "usbd_msc_scsi.h"
 #include "usbd_ioreq.h"
+#include "usbd_msc_hid_core.h"
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
@@ -109,7 +110,7 @@ void MSC_BOT_Init (USBD_HandleTypeDef  *pdev)
   hmsc->scsi_sense_tail = 0U;
   hmsc->scsi_sense_head = 0U;
 
-  ((USBD_StorageTypeDef *)pdev->pUserData)->Init(0U);
+  ((USBD_StorageHidTypeDef *)pdev->pUserData)->msc->Init(0U);
 
   USBD_LL_FlushEP(pdev, MSC_EPOUT_ADDR);
   USBD_LL_FlushEP(pdev, MSC_EPIN_ADDR);

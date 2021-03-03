@@ -112,6 +112,29 @@ uint8_t  USBD_MSC_RegisterStorage  (USBD_HandleTypeDef   *pdev,
 /**
   * @}
   */
+uint8_t  USBD_MSC_Init (USBD_HandleTypeDef *pdev,
+                            uint8_t cfgidx);
+
+uint8_t  USBD_MSC_DeInit (USBD_HandleTypeDef *pdev,
+                              uint8_t cfgidx);
+
+uint8_t  USBD_MSC_Setup (USBD_HandleTypeDef *pdev,
+                             USBD_SetupReqTypedef *req);
+
+uint8_t  USBD_MSC_DataIn (USBD_HandleTypeDef *pdev,
+                              uint8_t epnum);
+
+
+uint8_t  USBD_MSC_DataOut (USBD_HandleTypeDef *pdev,
+                               uint8_t epnum);
+
+uint8_t  *USBD_MSC_GetHSCfgDesc (uint16_t *length);
+
+uint8_t  *USBD_MSC_GetFSCfgDesc (uint16_t *length);
+
+uint8_t  *USBD_MSC_GetOtherSpeedCfgDesc (uint16_t *length);
+
+uint8_t  *USBD_MSC_GetDeviceQualifierDescriptor (uint16_t *length);
 
 /**
   * @}
