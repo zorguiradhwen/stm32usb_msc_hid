@@ -102,7 +102,7 @@ static void MSC_BOT_Abort(USBD_HandleTypeDef  *pdev);
 */
 void MSC_BOT_Init (USBD_HandleTypeDef  *pdev)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   hmsc->bot_state = USBD_BOT_IDLE;
   hmsc->bot_status = USBD_BOT_STATUS_NORMAL;
@@ -128,7 +128,7 @@ void MSC_BOT_Init (USBD_HandleTypeDef  *pdev)
 */
 void MSC_BOT_Reset (USBD_HandleTypeDef  *pdev)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   hmsc->bot_state  = USBD_BOT_IDLE;
   hmsc->bot_status = USBD_BOT_STATUS_RECOVERY;
@@ -146,7 +146,7 @@ void MSC_BOT_Reset (USBD_HandleTypeDef  *pdev)
 */
 void MSC_BOT_DeInit (USBD_HandleTypeDef  *pdev)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
   hmsc->bot_state  = USBD_BOT_IDLE;
 }
 
@@ -160,7 +160,7 @@ void MSC_BOT_DeInit (USBD_HandleTypeDef  *pdev)
 void MSC_BOT_DataIn (USBD_HandleTypeDef  *pdev,
                      uint8_t epnum)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   switch (hmsc->bot_state)
   {
@@ -193,7 +193,7 @@ void MSC_BOT_DataIn (USBD_HandleTypeDef  *pdev,
 void MSC_BOT_DataOut (USBD_HandleTypeDef  *pdev,
                       uint8_t epnum)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   switch (hmsc->bot_state)
   {
@@ -225,7 +225,7 @@ void MSC_BOT_DataOut (USBD_HandleTypeDef  *pdev,
 */
 static void  MSC_BOT_CBW_Decode (USBD_HandleTypeDef  *pdev)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   hmsc->csw.dTag = hmsc->cbw.dTag;
   hmsc->csw.dDataResidue = hmsc->cbw.dDataLength;
@@ -290,7 +290,7 @@ static void  MSC_BOT_CBW_Decode (USBD_HandleTypeDef  *pdev)
 static void  MSC_BOT_SendData(USBD_HandleTypeDef *pdev, uint8_t* pbuf,
                               uint16_t len)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   uint16_t length = (uint16_t)MIN(hmsc->cbw.dDataLength, len);
 
@@ -311,7 +311,7 @@ static void  MSC_BOT_SendData(USBD_HandleTypeDef *pdev, uint8_t* pbuf,
 void  MSC_BOT_SendCSW (USBD_HandleTypeDef  *pdev,
                               uint8_t CSW_Status)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   hmsc->csw.dSignature = USBD_BOT_CSW_SIGNATURE;
   hmsc->csw.bStatus = CSW_Status;
@@ -334,7 +334,7 @@ void  MSC_BOT_SendCSW (USBD_HandleTypeDef  *pdev,
 
 static void  MSC_BOT_Abort (USBD_HandleTypeDef  *pdev)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   if ((hmsc->cbw.bmFlags == 0U) &&
       (hmsc->cbw.dDataLength != 0U) &&
@@ -362,7 +362,7 @@ static void  MSC_BOT_Abort (USBD_HandleTypeDef  *pdev)
 
 void  MSC_BOT_CplClrFeature (USBD_HandleTypeDef  *pdev, uint8_t epnum)
 {
-  USBD_MSC_BOT_HandleTypeDef  *hmsc = (USBD_MSC_BOT_HandleTypeDef*)pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef  *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
 
   if(hmsc->bot_status == USBD_BOT_STATUS_ERROR)/* Bad CBW Signature */
   {

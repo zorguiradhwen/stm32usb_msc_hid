@@ -292,12 +292,12 @@ uint8_t  USBD_MSC_Init (USBD_HandleTypeDef *pdev, uint8_t cfgidx)
     USBD_LL_OpenEP(pdev, MSC_EPIN_ADDR, USBD_EP_TYPE_BULK, MSC_MAX_FS_PACKET);
     pdev->ep_in[MSC_EPIN_ADDR & 0xFU].is_used = 1U;
   }
-  pdev->pClassData = USBD_malloc(sizeof (USBD_MSC_BOT_HandleTypeDef));
-
-  if(pdev->pClassData == NULL)
-  {
-    return USBD_FAIL;
-  }
+  //pdev->pClassData = USBD_malloc(sizeof (USBD_MSC_BOT_HandleTypeDef));
+//
+//  if(pdev->pClassData == NULL)
+//  {
+//    return USBD_FAIL;
+//  }
 
   /* Init the BOT  layer */
   MSC_BOT_Init(pdev);
@@ -343,7 +343,7 @@ uint8_t  USBD_MSC_DeInit (USBD_HandleTypeDef *pdev,
 */
 uint8_t  USBD_MSC_Setup (USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
-  USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef*) pdev->pClassData;
+  USBD_MSC_BOT_HandleTypeDef *hmsc = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->msc;
   uint8_t ret = USBD_OK;
   uint16_t status_info = 0U;
 

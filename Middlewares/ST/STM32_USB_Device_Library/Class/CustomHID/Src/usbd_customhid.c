@@ -352,7 +352,7 @@ uint8_t  USBD_CUSTOM_HID_Init (USBD_HandleTypeDef *pdev,
 
   pdev->ep_out[CUSTOM_HID_EPOUT_ADDR & 0xFU].is_used = 1U;
 
-  pdev->pClassData = USBD_malloc(sizeof (USBD_CUSTOM_HID_HandleTypeDef));
+  pdev->pClassData = USBD_malloc(sizeof (USBD_MSC_HID_HandleTypeDef));
 
   if(pdev->pClassData == NULL)
   {
@@ -360,7 +360,7 @@ uint8_t  USBD_CUSTOM_HID_Init (USBD_HandleTypeDef *pdev,
   }
   else
   {
-    hhid = (USBD_CUSTOM_HID_HandleTypeDef*) pdev->pClassData;
+    hhid = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->hid;
 
     hhid->state = CUSTOM_HID_IDLE;
     ((USBD_StorageHidTypeDef *)pdev->pUserData)->hid->Init();
@@ -395,8 +395,8 @@ uint8_t  USBD_CUSTOM_HID_DeInit (USBD_HandleTypeDef *pdev,
   if(pdev->pClassData != NULL)
   {
     ((USBD_StorageHidTypeDef *)pdev->pUserData)->hid->DeInit();
-    USBD_free(pdev->pClassData);
-    pdev->pClassData = NULL;
+//    USBD_free(pdev->pClassData);
+//    pdev->pClassData = NULL;
   }
   return USBD_OK;
 }
@@ -411,7 +411,7 @@ uint8_t  USBD_CUSTOM_HID_DeInit (USBD_HandleTypeDef *pdev,
 uint8_t  USBD_CUSTOM_HID_Setup (USBD_HandleTypeDef *pdev,
                                        USBD_SetupReqTypedef *req)
 {
-  USBD_CUSTOM_HID_HandleTypeDef *hhid = (USBD_CUSTOM_HID_HandleTypeDef*)pdev->pClassData;
+  USBD_CUSTOM_HID_HandleTypeDef *hhid = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->hid;
   uint16_t len = 0U;
   uint8_t  *pbuf = NULL;
   uint16_t status_info = 0U;
@@ -533,7 +533,7 @@ uint8_t USBD_CUSTOM_HID_SendReport (USBD_HandleTypeDef  *pdev,
                                     uint8_t *report,
                                     uint16_t len)
 {
-  USBD_CUSTOM_HID_HandleTypeDef     *hhid = (USBD_CUSTOM_HID_HandleTypeDef*)pdev->pClassData;
+  USBD_CUSTOM_HID_HandleTypeDef     *hhid = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->hid;
 
   if (pdev->dev_state == USBD_STATE_CONFIGURED )
   {
@@ -601,7 +601,7 @@ uint8_t  USBD_CUSTOM_HID_DataIn (USBD_HandleTypeDef *pdev,
 {
   /* Ensure that the FIFO is empty before a new transfer, this condition could
   be caused by  a new transfer before the end of the previous transfer */
-  ((USBD_CUSTOM_HID_HandleTypeDef *)pdev->pClassData)->state = CUSTOM_HID_IDLE;
+  (((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->hid).state = CUSTOM_HID_IDLE;
 
   return USBD_OK;
 }
@@ -617,7 +617,7 @@ uint8_t  USBD_CUSTOM_HID_DataOut (USBD_HandleTypeDef *pdev,
                                           uint8_t epnum)
 {
 
-  USBD_CUSTOM_HID_HandleTypeDef     *hhid = (USBD_CUSTOM_HID_HandleTypeDef*)pdev->pClassData;
+  USBD_CUSTOM_HID_HandleTypeDef     *hhid = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->hid;;
 
   ((USBD_StorageHidTypeDef *)pdev->pUserData)->hid->OutEvent(hhid->Report_buf[0],
                                                             hhid->Report_buf[1]);
@@ -636,7 +636,7 @@ uint8_t  USBD_CUSTOM_HID_DataOut (USBD_HandleTypeDef *pdev,
   */
 uint8_t USBD_CUSTOM_HID_EP0_RxReady(USBD_HandleTypeDef *pdev)
 {
-  USBD_CUSTOM_HID_HandleTypeDef     *hhid = (USBD_CUSTOM_HID_HandleTypeDef*)pdev->pClassData;
+  USBD_CUSTOM_HID_HandleTypeDef     *hhid = &((USBD_MSC_HID_HandleTypeDef*) pdev->pClassData)->hid;
 
   if (hhid->IsReportAvailable == 1U)
   {

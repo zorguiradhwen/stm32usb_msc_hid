@@ -29,5 +29,13 @@ typedef struct
 
 extern USBD_StorageHidTypeDef USBD_MSC_HID_fops_FS ;
 
+typedef struct
+{
+	USBD_CUSTOM_HID_HandleTypeDef hid;
+	USBD_MSC_BOT_HandleTypeDef msc;
 
+}USBD_MSC_HID_HandleTypeDef;
+
+uint8_t  USBD_MSC_HID_RegisterUserData  (USBD_HandleTypeDef   *pdev,
+										USBD_StorageHidTypeDef* fops );
 #endif /* ST_STM32_USB_DEVICE_LIBRARY_CLASS_MSC_HID_INC_USBD_MSC_HID_CORE_H_ */

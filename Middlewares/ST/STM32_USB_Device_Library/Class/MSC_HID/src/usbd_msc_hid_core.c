@@ -70,34 +70,6 @@ __ALIGN_BEGIN static uint8_t USBD_MSC_HID_CfgDesc[USB_MSC_HID_CONFIG_DESC_SIZ] _
 	the configuration*/
 	0xC2,         /*bmAttributes: bus powered and Support Remote Wake-up */
 	0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
-	  /* 09 */
-	/********************  Mass Storage interface ********************/
-	0x09,   /* bLength: Interface Descriptor size */
-	0x04,   /* bDescriptorType: */
-	0x00,   /* bInterfaceNumber: Number of Interface */
-	0x00,   /* bAlternateSetting: Alternate setting */
-	0x02,   /* bNumEndpoints*/
-	0x08,   /* bInterfaceClass: MSC Class */
-	0x06,   /* bInterfaceSubClass : SCSI transparent*/
-	0x50,   /* nInterfaceProtocol */
-	0x05,          /* iInterface: */
-	/********************  Mass Storage Endpoints ********************/
-	  /* 18 */
-	0x07,   /*Endpoint descriptor length = 7*/
-	0x05,   /*Endpoint descriptor type */
-	MSC_EPIN_ADDR,   /*Endpoint address (IN, address 1) */
-	0x02,   /*Bulk endpoint type */
-	LOBYTE(MSC_MAX_FS_PACKET),
-	HIBYTE(MSC_MAX_FS_PACKET),
-	0x00,   /*Polling interval in milliseconds */
-
-	0x07,   /*Endpoint descriptor length = 7 */
-	0x05,   /*Endpoint descriptor type */
-	MSC_EPOUT_ADDR,   /*Endpoint address (OUT, address 1) */
-	0x02,   /*Bulk endpoint type */
-	LOBYTE(MSC_MAX_FS_PACKET),
-	HIBYTE(MSC_MAX_FS_PACKET),
-	0x00,     /*Polling interval in milliseconds*/
 
 	/*---------------------------------------------------------------------------*/
 	//IAD Interface Association Descriptor
@@ -113,7 +85,7 @@ __ALIGN_BEGIN static uint8_t USBD_MSC_HID_CfgDesc[USB_MSC_HID_CONFIG_DESC_SIZ] _
 	/* 09 */
 	0x09,         /*bLength: Interface Descriptor size*/
 	USB_DESC_TYPE_INTERFACE,/*bDescriptorType: Interface descriptor type*/
-	0x01,         /*bInterfaceNumber: Number of Interface*/
+	0x00,         /*bInterfaceNumber: Number of Interface*/
 	0x00,         /*bAlternateSetting: Alternate setting*/
 	0x02,         /*bNumEndpoints*/
 	0x03,         /*bInterfaceClass: CUSTOM_HID*/
@@ -161,6 +133,34 @@ __ALIGN_BEGIN static uint8_t USBD_MSC_HID_CfgDesc[USB_MSC_HID_CONFIG_DESC_SIZ] _
 //	0x06,//bFunctionSubClass
 //	0x50,//bInterfaceProtocol
 //	0x05,//iFunction
+	  /* 09 */
+		/********************  Mass Storage interface ********************/
+		0x09,   /* bLength: Interface Descriptor size */
+		0x04,   /* bDescriptorType: */
+		0x01,   /* bInterfaceNumber: Number of Interface */
+		0x00,   /* bAlternateSetting: Alternate setting */
+		0x02,   /* bNumEndpoints*/
+		0x08,   /* bInterfaceClass: MSC Class */
+		0x06,   /* bInterfaceSubClass : SCSI transparent*/
+		0x50,   /* nInterfaceProtocol */
+		0x05,          /* iInterface: */
+		/********************  Mass Storage Endpoints ********************/
+		  /* 18 */
+		0x07,   /*Endpoint descriptor length = 7*/
+		0x05,   /*Endpoint descriptor type */
+		MSC_EPIN_ADDR,   /*Endpoint address (IN, address 1) */
+		0x02,   /*Bulk endpoint type */
+		LOBYTE(MSC_MAX_FS_PACKET),
+		HIBYTE(MSC_MAX_FS_PACKET),
+		0x00,   /*Polling interval in milliseconds */
+
+		0x07,   /*Endpoint descriptor length = 7 */
+		0x05,   /*Endpoint descriptor type */
+		MSC_EPOUT_ADDR,   /*Endpoint address (OUT, address 1) */
+		0x02,   /*Bulk endpoint type */
+		LOBYTE(MSC_MAX_FS_PACKET),
+		HIBYTE(MSC_MAX_FS_PACKET),
+		0x00,     /*Polling interval in milliseconds*/
 
 } ;
 
@@ -203,24 +203,25 @@ uint8_t  USBD_MSC_HID_EP0_RxReady (USBD_HandleTypeDef  *pdev)
 uint8_t  USBD_MSC_HID_Init (USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 {
 	uint8_t ret = 0U;
-	ret |= USBD_MSC_Init(pdev, cfgidx);
 	ret |= USBD_CUSTOM_HID_Init(pdev, cfgidx);
+	ret |= USBD_MSC_Init(pdev, cfgidx);
+
 	return ret;
 }
 
 uint8_t  USBD_MSC_HID_DeInit (USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 {
 	uint8_t ret = 0U;
-	ret |= USBD_MSC_DeInit(pdev, cfgidx);
 	ret |= USBD_CUSTOM_HID_DeInit(pdev, cfgidx);
+	ret |= USBD_MSC_DeInit(pdev, cfgidx);
 	return ret;
 }
 
 uint8_t  USBD_MSC_HID_Setup (USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
 	uint8_t ret = 0U;
-	ret |= USBD_MSC_Setup(pdev, req);
 	ret |= USBD_CUSTOM_HID_Setup(pdev, req);
+	ret |= USBD_MSC_Setup(pdev, req);
 	return ret;
 
 }
@@ -228,16 +229,16 @@ uint8_t  USBD_MSC_HID_Setup (USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req
 uint8_t  USBD_MSC_HID_DataIn (USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
 	uint8_t ret = 0U;
-	ret |= USBD_MSC_DataIn(pdev, epnum);
 	ret |= USBD_CUSTOM_HID_DataIn(pdev, epnum);
+	ret |= USBD_MSC_DataIn(pdev, epnum);
 	return ret;
 }
 
 uint8_t  USBD_MSC_HID_DataOut (USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
 	uint8_t ret = 0U;
-	ret |= USBD_MSC_DataOut(pdev, epnum);
 	ret |= USBD_CUSTOM_HID_DataOut(pdev, epnum);
+	ret |= USBD_MSC_DataOut(pdev, epnum);
 	return ret;
 }
 
