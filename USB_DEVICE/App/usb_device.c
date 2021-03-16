@@ -24,11 +24,8 @@
 #include "usb_device.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
-#include "usbd_customhid.h"
-#include "usbd_custom_hid_if.h"
 #include "usbd_msc.h"
 #include "usbd_storage_if.h"
-#include "usbd_msc_hid_core.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -70,21 +67,20 @@ void MX_USB_DEVICE_Init(void)
   /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
   
   /* USER CODE END USB_DEVICE_Init_PreTreatment */
-  
+
   /* Init Device Library, add supported class and start the library. */
   if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK)
   {
     Error_Handler();
   }
-  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_MSC_HID_cb) != USBD_OK)
+  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_MSC) != USBD_OK)
   {
     Error_Handler();
   }
-  if (USBD_MSC_HID_RegisterUserData(&hUsbDeviceFS, &USBD_MSC_HID_fops_FS) != USBD_OK)
+  if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_Storage_Interface_fops_FS) != USBD_OK)
   {
     Error_Handler();
   }
-
   if (USBD_Start(&hUsbDeviceFS) != USBD_OK)
   {
     Error_Handler();

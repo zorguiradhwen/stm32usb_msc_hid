@@ -17,7 +17,6 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "fatfs.h"
@@ -28,7 +27,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "Keyboard.h"
+#include "File_Handling.h"
+#include "printf_override.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -72,7 +72,6 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-  
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -95,9 +94,29 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_SDIO_SD_Init();
-  //MX_FATFS_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-  Keyboard_init();
+  printf_init();
+
+  printf("Hello World!\n\r");
+  Mount_SD("/");
+  Format_SD();
+  Check_SD_Space();
+  Create_File("FILE1.TXT");
+  Create_File("FILE2.TXT");
+  Unmount_SD("/");
+
+  for (indx = 0; indx < 15; indx++)
+  {
+	Mount_SD("/");
+	sprintf(buffer, "Hello ---> %d\n", indx);
+	Update_File("FILE1.TXT", buffer);
+	sprintf(buffer, "world ---> %d\n", indx);
+	Update_File("FILE2.TXT", buffer);
+	Unmount_SD("/");
+
+	HAL_Delay(500);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,11 +126,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_Delay(1000);
-	  Keyboard_write("Hello World!!\n");
-	  HAL_Delay(1000);
-	  Keyboard_write("Good bye Cruel World!!\n");
-
   }
   /* USER CODE END 3 */
 }
@@ -125,11 +139,12 @@ void SystemClock_Config(void)
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Configure the main internal regulator output voltage 
+  /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
@@ -143,7 +158,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -183,7 +198,7 @@ void Error_Handler(void)
   * @retval None
   */
 void assert_failed(uint8_t *file, uint32_t line)
-{ 
+{
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
